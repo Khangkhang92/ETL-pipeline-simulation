@@ -1,0 +1,53 @@
+version: '3.6'
+
+services:
+  api:
+    build: .
+    container_name: api
+    restart: unless-stopped
+    env_file:
+      - '.env'
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./tmp:./app/tmp
+    networks:
+      - etl_network
+    healthcheck:
+      test:
+        ["CMD", "curl", "--fail", "http://localhost:8000/api/v1/docs"]
+      interval: 10s
+      timeout: 10s
+      retries: 5  
+  
+  db:
+    image: postgres:latest
+    container_name: fastapi_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1
+      - POSTGRES_DB=6p
+    networks:
+      - etl_network
+
+    ports:
+      - "5435:5432"  
+    healthcheck:
+      test:
+        ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 5  
+
+
+     
+networks:
+  etl_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
