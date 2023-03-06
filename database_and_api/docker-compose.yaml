@@ -12,7 +12,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./tmp:./app/tmp
+      - ./tmp:/opt/app/tmp
     networks:
       - etl_network
     healthcheck:

@@ -15,8 +15,6 @@ RUN pip install "poetry==$POETRY_VERSION"
 
 COPY ./pyproject.toml /opt/app/
 
-COPY *tmp/ /opt/app
-
 RUN poetry update
 RUN poetry install
 
